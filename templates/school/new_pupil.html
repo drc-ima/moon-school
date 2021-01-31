@@ -1,0 +1,24 @@
+{% extends 'layouts/main.html' %}
+{% block pup %}
+active
+{% endblock %}
+{% block page_title %}
+<h4>New Student</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-7 col-lg-7">
+            <div class="grid">
+                <div class="grid-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_table }}
+                        <div class="form-group mt-2">
+                            <button type="submit" class="btn-sm btn-block btn btn-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

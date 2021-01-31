@@ -1,0 +1,94 @@
+{% extends 'layouts/main.html' %}
+{% block attend %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>{{ term.description }} Attendance for {{ classe.description }}</h4>
+        {% if not attendance %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form" value="init">
+                <button type="submit" class="btn btn-sm btn-info">INITIATE</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+                <div class="grid-header split-header">
+                    Mark Attendance for {{ today }}
+                    <div>
+                        <a href="?today={{ pdate }}" class="btn btn-sm btn-white">Previous</a>
+                        <a href="?today={{ ndate }}" class="btn btn-sm btn-white">Next</a>
+                        <form action="" class="mt-2" method="get">
+                            <input type="date" name="today" onchange="form.submit()" id="" class="form-control">
+                        </form>
+                    </div>
+                </div>
+                <div class="grid-body">
+                    <div class="table-responsive">
+                        {% if not pupil_attendance %}
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="form" value="mark">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Students</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for pupil in pupils %}
+                                        <tr>
+                                            <td><label for="id_{{ pupil.id }}_status">{{ pupil.full_name }}</label></td>
+                                            <td>
+                                                <input type="hidden" name="pupil" value="{{ pupil.id }}">
+                                                <select required name="status" id="id_{{ pupil.id }}_status" class="custom-select">
+                                                    <option value="">----------</option>
+                                                    <option value="1">Present</option>
+                                                    <option value="0">Absent</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        Nothing to show here
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% if attendance %}
+                                    <div class="form-group mt-3">
+                                        <button type="submit" class="btn btn-sm btn-success">Submit</button>
+                                    </div>
+                                {% endif %}
+                            </form>
+                        {% else %}
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for attend in pupil_attendance %}
+                                    <tr>
+                                        <td>{{ attend.pupil.full_name }}</td>
+                                        <td>{{ attend.get_status_display }}</td>
+                                    </tr>
+                                {% empty %}
+                                    Nothing to show here
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

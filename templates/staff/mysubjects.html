@@ -1,0 +1,51 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block subj %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>My Subjects</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for object in object_list %}
+                            {% subject_classes object.id as classes %}
+                            <div class="list-group-item ">
+                                <div class="split-header">
+                                    <span class="h5">{{ object.subject_code }} - {{ object.description }}</span>
+                                    <a title="Click to view classes" data-toggle="collapse" href="#subj{{ object.id }}" role="button" aria-expanded="false" aria-controls="subj{{ object.id }}">
+                                        <i class="mdi mdi-open-in-new mdi-2x"></i>
+                                    </a>
+                                </div>
+                                <div class="collapse multi-collapse" id="subj{{ object.id }}">
+                                    <div class="list-group-flush">
+                                        {% for class in classes %}
+                                            <div class="list-group-item">
+                                                <div class="split-header">
+                                                    <span class="h6">{{ class.classe.description }}</span>
+                                                    <a title="Click to view details" href="{% url 'staff:subject-class' object.id class.classe.id %}">
+                                                        <i class="mdi mdi-open-in-new mdi-1x"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            Nothing to show here
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

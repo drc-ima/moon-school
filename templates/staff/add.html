@@ -1,0 +1,51 @@
+{% extends 'layouts/main.html' %}
+{% block staf %}
+active
+{% endblock %}
+{% block page_title %}
+<h4>Add Staff</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+                <div class="grid-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.staff_id }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.middle_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.gender }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.staff_type }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_date_employed">Date of Employment</label>
+                            {{ form.date_employed }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_date_of_birth">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_profile">Upload Profile</label>
+                            {{ form.profile }}
+                        </div>
+                        <button type="submit" class="btn-block btn-sm btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

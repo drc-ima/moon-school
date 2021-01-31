@@ -1,0 +1,152 @@
+{% extends 'layouts/main.html' %}
+{% load humanize %}
+{% load school_tags %}
+{% block css %}
+    <style>
+        u{
+            border-bottom: 2px dotted #000;
+            text-decoration: none;
+        }
+    </style>
+{% endblock %}
+{% block page_title %}
+    <button onclick="printDiv('receipt')" class="btn btn-sm btn-info">Print</button>
+{% endblock %}
+{% block content %}
+    {% school as school %}
+    <div id="receipt" class="row justify-content-center">
+        <div class="bg-white pt-3" style="width: 595px">
+            <div style="height: 421px;">
+                <p align="center" class="h4 font-weight-bolder">
+                    {% if school.logo %}<img class="img-lg" src="{{ school.logo.url }}" alt="">{% endif %} {{ school.name }}
+                </p>
+                <p align="center" class="h5">Official Receipt<br>{{ object.student_payment.student_fee.fee_schedule.academic_term.description }}, {{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.start_date | date:'Y'}}/{{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.end_date | date:'Y'}}</p>
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">Date: {{ object.student_payment.created_at }}</div>
+                        <div class="col-md-6 col-lg-6">Receipt No: #{{ object.receipt_id }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 col-lg-8">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-4">Received From: </div>
+                                <u class="col-md-7 col-lg-7">{{ object.student_payment.student_fee.pupil.full_name }}</u>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            Class: <u>{{ object.student_payment.student_fee.pupil.classs.description }}</u>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-11 col-lg-11">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">For the sum of: </div>
+                                <u class="col">{{ object.words | capfirst }} Ghana Cedis Only</u>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-11 col-lg-11">
+                            <div class="row">
+                                <div class="col-md-2 col-lg-2">Being: </div>
+                                <u class="col">{{ object.get_status_display}} of Fees For {{ object.student_payment.student_fee.fee_schedule.academic_term.description }}, {{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.start_date | date:'Y' }}/{{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.end_date | date:'Y' }} Academic Year</u>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-4 col-md-4 font-weight-bold">
+                            Amount Paid: GH¢ {{ object.student_payment.amount | intcomma }}
+                        </div>
+                        <div class="col-lg-4 col-md-4 font-weight-bold">
+                            Balance: GH¢ {{ object.student_payment.student_fee.remaining | intcomma }}
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <div class="mt-lg-5">
+                                <hr style="color: black; border-bottom: 2px solid black">
+                                <div align="center">
+                                    {{ object.created_by.get_full_name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-5" style="border-bottom: 1px solid black">
+                    <small>Moon School</small>
+                </div>
+            </div>
+            <hr class="mt-4" style="border-bottom: 2px dotted black">
+            <div style="height: 421px;">
+                <p align="center" class="h4 font-weight-bolder">
+                    {% if school.logo %}<img class="img-lg" src="{{ school.logo.url }}" alt="">{% endif %} {{ school.name }}
+                </p>
+                <p align="center" class="h5">Official Receipt<br>{{ object.student_payment.student_fee.fee_schedule.academic_term.description }}, {{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.start_date | date:'Y'}}/{{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.end_date | date:'Y'}}</p>
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">Date: {{ object.student_payment.created_at }}</div>
+                        <div class="col-md-6 col-lg-6">Receipt No: #{{ object.receipt_id }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 col-lg-8">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-4">Received From: </div>
+                                <u class="col-md-7 col-lg-7">{{ object.student_payment.student_fee.pupil.full_name }}</u>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4">
+                            Class: <u>{{ object.student_payment.student_fee.pupil.classs.description }}</u>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-11 col-lg-11">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">For the sum of: </div>
+                                <u class="col">{{ object.words | capfirst }} Ghana Cedis Only</u>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-11 col-lg-11">
+                            <div class="row">
+                                <div class="col-md-2 col-lg-2">Being: </div>
+                                <u class="col">{{ object.get_status_display}} of Fees For {{ object.student_payment.student_fee.fee_schedule.academic_term.description }}, {{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.start_date | date:'Y' }}/{{ object.student_payment.student_fee.fee_schedule.academic_term.academic_year.end_date | date:'Y' }} Academic Year</u>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-4 col-md-4 font-weight-bold">
+                            Amount Paid: GH¢ {{ object.student_payment.amount | intcomma }}
+                        </div>
+                        <div class="col-lg-4 col-md-4 font-weight-bold">
+                            Balance: GH¢ {{ object.student_payment.student_fee.remaining | intcomma }}
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <div class="mt-lg-5">
+                                <hr style="color: black; border-bottom: 2px solid black">
+                                <div align="center">
+                                    {{ object.created_by.get_full_name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-5" style="border-bottom: 1px solid black">
+                    <small>Moon School</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        function printDiv(divName){
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+
+        }
+    </script>
+{% endblock %}

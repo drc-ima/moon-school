@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Label - Premium Responsive Bootstrap 4 Admin & Dashboard Template</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'vendors/iconfonts/mdi/css/materialdesignicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendors/css/vendor.addons.css' %}" />
+    <!-- endinject -->
+    <!-- vendor css for this page -->
+    <!-- End vendor css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'css/shared/style.css' %}" />
+    <!-- endinject -->
+    <!-- Layout style -->
+    <link rel="stylesheet" href="{% static 'css/demo_1/style.css' %}">
+    <!-- Layout style -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+</head>
+<body>
+<div class="authentication-theme auth-style_1" style="margin-top: -100px">
+    <div class="row">
+        <div class="col-12 logo-section">
+            <div class="logo justify-content-center">
+                <img src="{% static 'images/TMHEMMA.png' %}" alt="logo" />
+
+            </div><div class="h4" align="center">School Details - Moon School</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5 col-md-7 col-sm-9 col-11 mx-auto">
+            <div class="grid">
+                <div class="grid-title ml-2 mt-2">
+                    <a href="{% url 'account:register-user' %}">Back</a>
+                </div>
+                <div class="grid-body">
+                    <div class="row">
+                        <div class="col-lg-10 col-md-10 col-sm-10 col-12 mx-auto form-wrapper" id="app">
+                            {% if errors %}
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                    <strong>Error!</strong> {{ errors }}.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group input-rounded">
+                                    <input autocomplete="off" type="text" name="institution" required class="form-control" placeholder="Name of School" />
+                                </div>
+                                <div class="form-group input-rounded">
+                                    <input autocomplete="off" type="text" name="phone_number" class="form-control" placeholder="Phone Number" />
+                                </div>
+                                <div class="form-group input-rounded">
+                                    <input autocomplete="off" type="text" name="domain" required class="form-control" placeholder="Enter your school domain eg. example.com" />
+                                </div>
+                                <div class="form-group input-rounded">
+                                    <input autocomplete="off" type="text" name="gps" required class="form-control" placeholder="Enter GPS Address" />
+                                </div>
+                                <div class="form-group input-rounded">
+                                    <label for="id_logo">School Logo</label>
+                                    <input type="file" id="id_logo" name="logo" class="form-control" placeholder="Select your logo" />
+                                </div>
+                                <button id="submit" type="submit" class="btn btn-primary btn-block"> Submit </button>
+                            </form>
+{#                            <div class="signup-link">#}
+{#                                <p>Already have an account?</p>#}
+{#                                <a href="{% url 'login' %}">Login</a>#}
+{#                            </div>#}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="auth_footer">
+        <p class="text-muted text-center">© Open Source Project. Moon Technologies</p>
+    </div>
+</div>
+<!--page body ends -->
+<!-- SCRIPT LOADING START FORM HERE /////////////-->
+<!-- plugins:js -->
+<script src="{% static 'vendors/js/core.js' %}"></script>
+<script src="{% static 'vendors/js/vendor.addons.js' %}"></script>
+<!-- endinject -->
+<!-- Vendor Js For This Page Ends-->
+<!-- build:js -->
+<!-- Vendor Js For Th
+<!-- endbuild -->
+</body>
+</html>

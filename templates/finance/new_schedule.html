@@ -1,0 +1,112 @@
+{% extends 'layouts/main.html' %}
+{% block setup %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>Add Fees Schedules</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            {% if errors %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> {{ errors }}.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+            <div class="grid">
+                <div class="grid-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_class">Class</label>
+                            <select required name="class" id="id_class" class="custom-select">
+                                <option value="">----------</option>
+                                {% for class in classes %}
+                                    <option value="{{ class.id }}">{{ class.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_status">Student Status</label>
+                            <select required name="status" id="id_status" class="custom-select">
+                                <option value="">----------</option>
+                                <option value="D">Day</option>
+                                <option value="FD">Fresh Day</option>
+                                <option value="B">Boarder</option>
+                                <option value="FB">Fresh Boarder</option>
+                            </select>
+                        </div>
+                        <small>Please enter amount for items that apply to the class and student status</small>
+                        {% for fee_item in fee_items %}
+                            <div class="form-group row">
+                                <div class="col">{{ fee_item.item }}</div>
+                                <div class="form-group col">
+                                    <input placeholder="Enter Amount for {{ fee_item.item }}" type="number" step="any" name="{{ fee_item.id }}-{{ fee_item.item }}" class="form-control">
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {#                        <div id="inputFormRow" class="row">#}
+                        {#                            <div class="form-group col">#}
+                        {#                                <label for="id_item">Fee Item</label>#}
+                        {#                                <select required name="item[]" id="id_item" class="custom-select">#}
+                        {#                                    <option value="">----------</option>#}
+                        {#                                    {% for fee_item in fee_items %}#}
+                        {#                                        <option value="{{ fee_item.id }}">{{ fee_item.item }}</option>#}
+                        {#                                    {% endfor %}#}
+                        {#                                </select>#}
+                        {#                            </div>#}
+                        {#                            <div class="form-group col">#}
+                        {#                                <label for="id_amount">Amount</label>#}
+                        {#                                <input required type="number" class="form-control" name="amount[]" id="id_amount">#}
+                        {#                            </div>#}
+                        {#                        </div>#}
+                        {#                        <div id="newRow"></div>#}
+                        {#                        <div align="right" id="btn">#}
+                        {#                            <button title="Click to add a more items" id="addRow" type="button" class="btn text-info btn-sm btn-white">#}
+                        {#                                <i class="mdi mdi-plus"></i>#}
+                        {#                            </button>#}
+                        {#                        </div>#}
+                        <div class="form-group">
+                            <button class="btn-info btn" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $("#addRow").click(function () {
+            var html = '';
+            html += '<div id="inputFormRow" >';
+            html += '<div class="row">';
+            html += '<div class="form-group col">';
+            html += '<label for="id_item">Fee Item</label>';
+            html += '<select required name="item[]" id="id_item" class="custom-select">';
+            html += '<option value="">----------</option>';
+            html += '{% for fee_item in fee_items %}';
+                html += '<option value="{{ fee_item.id }}">{{ fee_item.item }}</option>';
+                html += '{% endfor %}';
+            html += '</select>';
+            html += '</div>';
+            html += '<div class="form-group col">';
+            html += '<label for="id_amount">Amount</label>';
+            html += '<input required type="number" step="any" class="form-control" name="amount[]" id="id_amount">';
+            html += '</div>';
+            html += '</div>';
+            html += '<button id="removeRow" type="button" title="Remove item" class="btn btn-sm text-danger btn-white"><i class="mdi mdi-close"></></button>';
+            html += '</div>';
+
+            $("#newRow").append(html);
+        });
+        $(document).on('click', '#removeRow', function () {
+            $(this).closest('#inputFormRow').remove();
+        });
+    </script>
+{% endblock %}

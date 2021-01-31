@@ -1,0 +1,108 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block mc %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ object.description }}</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 col-lg-10">
+            <div class="grid">
+                <div class="grid-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item"><a href="#pupil" data-toggle="tab" role="tab" aria-controls="pupil" aria-selected="false" class="nav-link active" id="pupil-tab">Students</a></li>
+                        <li class="nav-item"><a href="#subject" data-toggle="tab" role="tab" aria-controls="subject" aria-selected="false" class="nav-link" id="subject-tab">Subjects</a></li>
+                        <li class="nav-item"><a href="#grade" data-toggle="tab" role="tab" aria-controls="grade" aria-selected="false" class="nav-link" id="grade-tab">Academic Sessions</a></li>
+                    </ul>
+                </div>
+                <div class="grid-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="pupil" role="tabpanel" aria-labelledby="pupil-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Full Name</th>
+                                    <th>Gender</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for pupil in pupils %}
+                                    <tr>
+                                        <td>{{ pupil.pupil_id }}</td>
+                                        <td>{{ pupil.full_name }}</td>
+                                        <td>{{ pupil.get_gender_display }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% empty %}
+                                    Nothing to show here
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="subject" role="tabpanel" aria-labelledby="subject-tab">
+                        <div class="list-group-flush">
+                            {% for subject in subjects %}
+                                <div class="list-group-item">
+                                    <h5>{{ subject.subject.subject_code }} - {{ subject.subject.description }}</h5>
+                                    <small>Teacher: {{ subject.subject.teacher.full_name }}</small>
+                                </div>
+                            {% empty %}
+                                Nothing to show here
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="grade" role="tabpanel" aria-labelledby="grade-tab">
+                        <div class="list-group-flush">
+                            {% for session in sessions %}
+                                {% session_terms session.id as session_terms %}
+{#                                {% session_terms as terms %}#}
+                                <div class="list-group-item">
+                                    <div class="split-header">
+                                        <h5>{{ session.start_date }} - {{ session.end_date }}</h5>
+                                        <a title="Click to view academic terms" data-toggle="collapse" href="#term{{ session.id }}" role="button" aria-expanded="false" aria-controls="term{{ session.id }}">
+                                            <i class="mdi mdi-2x mdi-open-in-new"></i>
+                                        </a>
+                                    </div>
+                                    <div class="collapse multi-collapse" id="term{{ session.id }}">
+                                        <div class="list-group-flush">
+                                            {% for term in session_terms %}
+                                                <div class="list-group-item split-header">
+                                                    <span class="h6">{{ term.description }}</span>
+                                                    <div>
+                                                       <a href="{% url 'pupil:class-term-results' object.id term.id %}" title="Click to view academic results details">
+                                                            <i class="mdi mdi-1x mdi-file-check"></i>
+                                                        </a>
+                                                        <a href="{% url 'pupil:class-term-attendances' object.id term.id %}" title="Click to view attendance records">
+                                                            <i class="mdi mdi-1x mdi-human-greeting"></i>
+                                                        </a>
+                                                        <a href="{% url 'schedule:class' object.id term.id %}" title="Click to view class schedules">
+                                                            <i class="mdi mdi-1x mdi-table-large"></i>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            {% empty %}
+                                                Nothing to show here
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                Nothing to show here
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

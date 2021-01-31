@@ -1,0 +1,100 @@
+{% extends 'layouts/main.html' %}
+{% block page_title %}
+    <h4>{{ class.description }} {{ term.description }} Schedules {{ today }}</h4>
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-body">
+            {% if not schedule and user.user_type == 'SH' %}
+                <form action="" method="post">
+                    <div class="table-responsive overflow-auto">
+                        {% csrf_token %}
+                        <table class="table table-bordered" style="width: 1800px">
+                            <thead>
+                            <tr>
+                                <th>{{ class.description }}</th>
+                                {% for hour in hours %}
+                                    <th>{{ hour }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for day in days %}
+                                <tr>
+                                    <th>{{ day.1 }}</th>
+                                    {% for hour in hours %}
+                                        <td>
+                                            {#                                        <input type="hidden" name="day" value="{{ day }}">#}
+                                            {#                                        <input type="hidden" name="hour" value="{{ hour }}">#}
+                                            <select required name="{{ day.0 }}-{{ hour }}" id="id_{{ day.1 }}{{ hour }}" class="form-control">
+                                                <option value="">Select an activity</option>
+                                                {% for subject in subjects %}
+                                                    <option value="{{ subject.subject.id }}">{{ subject.subject.description }}</option>
+                                                {% endfor %}
+                                                <option value="Break" {% if hour == '12:00' %}selected{% endif %}>Break</option>
+                                                <option value="Extra Curriculum">Extra Curriculum</option>
+                                            </select>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn-sm btn btn-success">Submit</button>
+                    </div>
+                </form>
+            {% elif not schedule and not user.user_type == 'SH' %}
+                Schedules not published yet
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>{{ class.description }}</th>
+                            {% for hour in hours %}
+                                <th>{{ hour }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for day in days %}
+                            <tr>
+                                <th>{{ day.1 }}</th>
+                                {% for hour in hours %}
+                                    <td class="text-wrap">
+                                        {#                                        <input type="hidden" name="day" value="{{ day }}">#}
+                                        {#                                        <input type="hidden" name="hour" value="{{ hour }}">#}
+                                        {% for activity in schedule_activities %}
+                                            {% if activity.day == day.0 and activity.hour == hour  %}
+                                                {% if activity.is_subject %}
+                                                    {{ activity.subject.subject_code }} - {{ activity.subject.description }}
+                                                    <br>
+                                                    <small class="text-muted">Teacher: {{ activity.subject.teacher.full_name }}</small>
+                                                {% else %}
+                                                    {{ activity.item }}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+
+{#                                        <select required name="{{ day.0 }}-{{ hour }}" id="id_{{ day.1 }}{{ hour }}" class="form-control">#}
+{#                                            <option value="">Select an activity</option>#}
+{#                                            {% for subject in subjects %}#}
+{#                                                <option value="{{ subject.subject.id }}">{{ subject.subject.description }}</option>#}
+{#                                            {% endfor %}#}
+{#                                            <option value="Break" {% if hour == '12:00' %}selected{% endif %}>Break</option>#}
+{#                                            <option value="Extra Curriculum">Extra Curriculum</option>#}
+{#                                        </select>#}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

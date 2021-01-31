@@ -1,0 +1,83 @@
+{% extends 'layouts/main.html' %}
+{% block fees %}
+active
+{% endblock %}
+{% block page_title %}
+<h4>New Fee Payment</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            {% if errors %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Errors!</strong> {{ errors }}.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+            <div class="grid">
+                <div class="grid-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_class">Class</label>
+                            <select required name="class" id="id_class" class="custom-select">
+                                <option value="">----------</option>
+                                {% for class in classes %}
+                                    <option value="{{ class.id }}">{{ class.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_pupil">Students</label>
+                            <select disabled required name="pupil" id="id_pupil" class="custom-select">
+                                <option value="">------------</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_amount">Amount GHS</label>
+                            <input required step="any" type="number" name="amount" placeholder="Enter amount in cedis" id="id_amount" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button id="id_submit" class="btn btn-sm btn-success">Pay</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $("#id_class").change(function () {
+            let class_id = $(this).val();
+            if(class_id){
+                $.ajax({
+                    url: `/finance/class-pupils/${class_id}/`,
+                    dataType: 'json',
+                    success: function (context) {
+                        if(context.length > 0){
+                            $("#id_pupil").prop('disabled', false);
+                            //$("#id_amount").prop('disabled', false);
+                            for (let p=0; p < context.length; p++){
+                                $("#id_pupil").append("<option value='" + context[p].id + "'>" + context[p].first_name + " " + context[p].last_name + "</option>");
+                            }
+                        }else{
+                            $("#id_pupil").prop('disabled', true);
+                           // $("#id_amount").prop('disabled', true);
+                            $("#id_pupil").html("<option value=''>------------</option>");
+                        }
+                    }
+                })
+            }
+        });
+        /*let amount = $("#id_amount").val();
+
+        if ($("#id_amount").prop('disabled', false)){
+            $("#id_submit").prop('disabled', false);
+        } else {
+            $("#id_submit").prop('disabled', true);
+        }*/
+    </script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'layouts/main.html' %}
+{% block man %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>Management</h4>
+        <div>
+            <a href="" data-toggle="modal" data-target="#classModal" class="btn btn-sm btn-inverse-info">New Class</a>
+            <a href="" data-toggle="modal" data-target="#subjectModal" class="btn btn-sm btn-inverse-primary">New Subject</a>
+            <a href="" data-toggle="modal" data-target="#gradeModal" class="btn btn-sm btn-inverse-success">New Grade Scheme</a>
+        </div>
+    </div>
+
+{% endblock %}
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errors }}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="grid">
+        <div class="grid-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item"><a href="#class" data-toggle="tab" role="tab" aria-controls="class" aria-selected="false" class="nav-link active" id="class-tab">Classes</a></li>
+                <li class="nav-item"><a href="#subject" data-toggle="tab" role="tab" aria-controls="subject" aria-selected="false" class="nav-link" id="subject-tab">Subjects</a></li>
+                <li class="nav-item"><a href="#grade" data-toggle="tab" role="tab" aria-controls="grade" aria-selected="false" class="nav-link" id="grade-tab">Grade Schemes</a></li>
+            </ul>
+        </div>
+        <div class="grid-body">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="class" role="tabpanel" aria-labelledby="class-tab">
+                    <div class="row list-group-flush">
+                        {% for class in classes %}
+                            <div class="col-md-5 col-lg-5 mr-1 list-group-item mb-2">
+                                <a class="h5" href="{% url 'school:management-class' class.id %}">{{ class.description }}</a>
+                                <p>Class Teacher: {% if class.teacher %}{{ class.teacher.full_name }}{% else %}Not Assigned{% endif %}</p>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="subject" role="tabpanel" aria-labelledby="subject-tab">
+                    <div class="row list-group-flush">
+                        {% for subject in subjects %}
+                            <div class="col-md-5 col-lg-5 mr-1 list-group-item mb-2">
+                                <a class="h5" href="{% url 'school:management-subject' subject.id %}">{{ subject.subject_code }} - {{ subject.description }}</a>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="grade" role="tabpanel" aria-labelledby="grade-tab">
+                    <div class="row list-group-flush">
+                        {% for grade in grades %}
+                            <div class="col-md-5 col-lg-5 mr-1 list-group-item mb-2 split-header">
+                                <span class="h5">{{ grade.grade }}. ({{ grade.from_score }} - {{ grade.to_score }})</span>
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form" value="remgrade">
+                                    <input type="hidden" name="grade" value="{{ grade.id }}">
+                                    <button type="submit" title="Remove scheme" class="btn btn-xs btn-white text-danger">
+                                        <i class="mdi mdi-close"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="classModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="classModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Class</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="class">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" required name="description" placeholder="Class Description eg. Primary One" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="subjectModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="subjectModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Subject</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="subject">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" required name="code" placeholder="Subject Code" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" required name="description" placeholder="Subject Description" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="gradeModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="gradeModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">New Grade Scheme</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="grade">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input autocomplete="off" type="number" step="any" required name="from_score" placeholder="Score Start Point" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="number" required name="to_score" placeholder="Score End Point" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" required name="grade" placeholder="Enter grade eg. A, B, C" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

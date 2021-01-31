@@ -1,0 +1,60 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block setup %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>Fees Schedules for {{ term.description }}</h4>
+        <a href="{% url 'finance:schedule-add' term.id %}" class="btn btn-sm btn-info">ADD SCHEDULE</a>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Class</th>
+                        {% for student_status in student_statuses %}
+                            <th>{{ student_status.1 }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for class in classes %}
+                        <tr>
+                            <th>{{ class.description }}</th>
+                            {% for student_status in student_statuses %}
+                                {% fee_schedule_items class.id student_status.0 term.id as items %}
+                                <td class="text-wrap">
+                                    {% if items.fs.student_status == student_status.0 %}
+{#                                        {{ items.items }}#}
+                                        <ul>
+                                            {% for item in items.items %}
+{#                                                {{ item }} - {{ student_status }}#}
+                                                {% if item.fee_schedule.student_status == student_status.0 %}
+                                                    <li class="split-header">
+                                                        {{ item.fee_item.item }} - GHS {{ item.amount }}
+{#                                                        <a href="" class="text-danger">#}
+{#                                                            <i class="mdi mdi-close"></i>#}
+{#                                                        </a>#}
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <li class="font-weight-bolder">Total: GHS {{ items.fs.amount }}</li>
+                                        </ul>
+
+                                    {% endif %}
+
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

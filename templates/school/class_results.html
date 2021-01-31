@@ -1,0 +1,49 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block ay %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ object.description }}</h4>
+    <p>Class Teacher: {% if object.teacher %}{{ object.teacher.full_name }}{% else %}Not Assigned{% endif %}</p>
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Pupil</th>
+                        <th>Final Average Score</th>
+                        <th>Final Grade</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for res in results %}
+                        {% result_average res.id as avg %}
+                        <tr>
+                            <td>{{ res.pupil.pupil_id }}</td>
+                            <td>{{ res.pupil.full_name }}</td>
+                            <td>{{ avg.avg }}</td>
+                            <td>{{ avg.grade }}</td>
+                            <td>
+                                <a href="#" class="btn btn-xs btn-white text-primary">
+                                    <i class="mdi mdi-1x mdi-open-in-new"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">Nothing to show here</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

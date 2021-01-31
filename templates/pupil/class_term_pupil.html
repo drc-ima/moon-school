@@ -1,0 +1,40 @@
+{% extends 'layouts/main.html' %}
+{% block mc %}
+active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ object.pupil.full_name }} {{ object.result.academic_term.description }} Results</h4>
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Class Score</th>
+                        <th>Exams Score</th>
+                        <th>Total Score</th>
+                        <th>Grade</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for subject in subjects %}
+                        <tr>
+                            <td>{{ subject.subject.subject_code }} - {{ subject.subject.description }}</td>
+                            <td>{{ subject.class_score }}</td>
+                            <td>{{ subject.exam_score }}</td>
+                            <td>{{ subject.total_score }}</td>
+                            <th>{{ subject.grade }}</th>
+                        </tr>
+                    {% empty %}
+                        Nothing to show here
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

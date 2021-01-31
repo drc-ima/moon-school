@@ -1,0 +1,86 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block setup %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>Fees Setup</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-4 col-lg-4">
+            <div class="grid">
+                <div class="grid-header">School Fees Items</div>
+                <div class="grid-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="form" value="new">
+                        <div class="input-group mb-3">
+                            <input required type="text" name="description" class="form-control form-control-lg m-input" placeholder="Enter item description" autocomplete="off">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-sm btn-info">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="list-group">
+                        {% for object in object_list %}
+                            <div class="list-group-item split-header">
+                                {{ object.item }}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form" value="remove">
+                                    <input type="hidden" name="item" value="{{ object.id }}">
+                                    <button class="btn btn-xs btn-white text-danger">
+                                        <i class="mdi mdi-close"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col lg-8">
+            <div class="grid">
+                <div class="grid-header">Academic Sessions</div>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for session in sessions %}
+                            {% session_terms session.id as terms %}
+                            <div class="list-group-item">
+                                <div class="split-header">
+                                    <span class="h5">{{ session.start_date }} - {{ session.end_date }}</span>
+                                    <a class="text-info" title="Click to view Academic terms" data-toggle="collapse" href="#term{{ session.id }}" role="button" aria-expanded="false" aria-controls="term{{ session.id }}">
+                                        <i class="mdi mdi-2x mdi-open-in-new"></i>
+                                    </a>
+                                </div>
+                                <div class="collapse multi-collapse" id="term{{ session.id }}">
+                                    <div class="list-group-flush">
+                                        {% for term in terms %}
+                                            <div class="list-group-item">
+                                                <div class="split-header">
+                                                    <span class="h6">{{ term.description }}</span>
+                                                    <a title="Click to view details" href="{% url 'finance:schedules' term.id %}">
+                                                        <i class="mdi mdi-open-in-new mdi-1x"></i>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            Nothing to show here
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

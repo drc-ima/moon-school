@@ -1,0 +1,113 @@
+{% extends 'layouts/main.html' %}
+{% block man %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <div>
+            <h4>{{ object.description }}</h4>
+            <p>Class Teacher:
+                {% if object.teacher %}
+                    {{ object.teacher.full_name }}<form action="" method="post">{% csrf_token %}<input type="hidden" name="form" value="remteach"><button type="submit" class="btn btn-xs btn-white" title="Click to Remove this assignment"><i class='mdi text-danger mdi-1x mdi-close'></i></button></form>
+                {% else %}
+                    <a href="#" data-target="#assignModal" data-toggle="modal" title="Click to assign"><i class="mdi mdi-1x mdi-plus"></i></a>
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+{% endblock %}
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errors }}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <div class="grid">
+                <div class="grid-header">Subjects</div>
+                <div class="grid-body">
+                    <form action="" method="post">
+                        <input type="hidden" name="form" value="subject">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <select onchange="form.submit()" required name="subject" class="custom-select">
+                                <option value="">Schedule a subject for this class</option>
+                                {% for sub in subs %}
+                                    <option value="{{ sub.id }}">{{ sub.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="list-group-flush">
+                        {% for subject in subjects %}
+                            <div class="list-group-item split-header">
+                                <a href="{% url 'school:management-subject' subject.subject.id %}">{{ subject.subject.description }}</a>
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form" value="remsub">
+                                    <input type="hidden" name="sub" value="{{ subject.id }}">
+                                    <button type="submit" class="text-danger btn-xs btn btn-white">
+                                        <i class="mdi-close mdi"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% empty %}
+                            No subject Scheduled for this class
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="grid">
+            <div class="grid-header">Students</div>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for student in students %}
+                            <div class="list-group-item">{{ student.full_name }}</div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="assignModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="assignModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">Assgin A Class Teacher</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="assign">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <select required name="teacher" id="" class="custom-select">
+                                <option value="">Choose Teacher</option>
+                                {% for class_teacher in class_teachers %}
+                                    <option value="{{ class_teacher.id }}">{{ class_teacher.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

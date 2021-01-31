@@ -1,0 +1,59 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block ay %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>Attendance Records of {{ object.classs.description }}</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 col-lg-10">
+            <div class="grid">
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for pupil in pupils %}
+                            {% attendance_status pupil.id object.id as stat %}
+                            <div class="list-group-item">
+                                <div class="split-header">
+                                    <div>
+                                        <a  data-toggle="collapse" href="#atten{{ pupil.id }}" role="button" aria-expanded="false" aria-controls="atten{{ pupil.id }}"><i class="mdi mdi-open-in-new mdi-1x"></i></a> {{ pupil.full_name }}
+                                    </div>
+                                    <div class="split-header">
+                                        <span>Present: {{ stat.present }} Days</span>&nbsp;&nbsp;
+                                        <span>Absent: {{ stat.absent }} Days</span>&nbsp;&nbsp;
+                                        <span>Total: {{ stat.total }} / {{ object.number_of_days }} Days</span>&nbsp;&nbsp;
+                                    </div>
+                                </div>
+                                <div class="collapse multi-collapse" id="atten{{ pupil.id }}">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for attendance in stat.attendances %}
+                                                    <tr>
+                                                        <td>{{ attendance.date }}</td>
+                                                        <td>{{ attendance.get_status_display }}</td>
+                                                    </tr>
+                                                {% empty %}
+                                                    Nothing to show here
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

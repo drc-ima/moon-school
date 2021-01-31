@@ -1,0 +1,54 @@
+{% extends 'layouts/main.html' %}
+{% block pup %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>Student Records</h4>
+        {% if user.user_type == 'SH' %}
+            <a href="{% url 'school:pupil-add' %}" class="btn btn-sm btn-info">Admit Student</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Full Name</th>
+                        <th>Class</th>
+                        <th>Gender</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td>{{ object.pupil_id }}</td>
+                            <td>{{ object.full_name }}</td>
+                            <td>{{ object.classs.description }}</td>
+                            <td>{{ object.get_gender_display }}</td>
+                            <td>
+                                {% if user.user_type == 'SH' %}
+                                    <a href="" class="btn btn-xs btn-white text-primary">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">Nothing to show here</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

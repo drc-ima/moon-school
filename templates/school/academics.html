@@ -1,0 +1,65 @@
+{% extends 'layouts/main.html' %}
+{% block ay %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>Academic Sessions</h4>
+        <a href="#" data-toggle="modal" data-target="#sessionModal" class="btn btn-sm btn-info">NEW ACADEMIC SESSION</a>
+    </div>
+
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for object in object_list %}
+                            <div class="list-group-item split-header {% if object.is_current %}border-left border-primary{% endif %} ">
+                                <a href="{% url 'school:academic-details' object.id %}" class="h5">{{ object.start_date }} - {{ object.end_date }}</a>
+                                {% if not object.is_current %}
+                                    <a href="?cur={{ object.id }}" class="btn btn-sm btn-white text-success">Make Current</a>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="sessionModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="sessionModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Academic Session</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="assign">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="id_start">Start Date</label>
+                            <input type="date" name="start" id="id_start" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_start">End Date</label>
+                            <input type="date" name="end" id="id_end" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

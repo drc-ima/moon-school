@@ -1,0 +1,93 @@
+{% extends 'layouts/main.html' %}
+{% block ay %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <span>
+            <h4>{{ object.description }}</h4>
+            <p>{{ object.start_date }} - {{ object.end_date }} ({{ object.number_of_weeks }} weeks)</p>
+        </span>
+        {% if not result %}
+            <a href="?result=OPEN" class="btn btn-sm btn-info">OPEN FOR PUPIL RESULTS</a>
+        {% elif result and result.status == 0 %}
+            <a href="" class="btn btn-sm btn-inverse-warning">CLOSE FOR PUPIL RESULTS</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
+{% block content %}
+    <div class="grid">
+        <div class="grid-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item"><a href="#attend" data-toggle="tab" role="tab" aria-controls="attend" aria-selected="false" class="nav-link active" id="attend-tab">Attendance Records</a></li>
+                <li class="nav-item"><a href="#result" data-toggle="tab" role="tab" aria-controls="result" aria-selected="false" class="nav-link" id="result-tab">Pupil Results</a></li>
+                <li class="nav-item"><a href="#schedule" data-toggle="tab" role="tab" aria-controls="schedule" aria-selected="false" class="nav-link" id="schedule-tab">Class Schedules</a></li>
+            </ul>
+        </div>
+        <div class="grid-body">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="attend" role="tabpanel" aria-labelledby="attend-tab">
+                    <div class="list-group-flush">
+                        {% for attendance in attendances %}
+                            <h5>
+                                <a href="{% url 'school:academic-attendances' attendance.id %}" class="list-group-item">
+                                    {{ attendance.classs.description }}
+                                </a>
+                            </h5>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="result" role="tabpanel" aria-labelledby="result-tab">
+                    <div class="list-group-flush">
+                        {% for class in classes %}
+                            <h5>
+                                <a href="{% url 'school:academic-results-class' class.id %}" class="list-group-item">
+                                    {{ class.description }}
+                                </a>
+                            </h5>
+
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-2 col-lg-2">
+                                <label for="id_class">Add Schedule for: </label>
+                            </div>
+                            <div class="col-md-5 col-lg-5">
+                                <select onchange="form.submit()" name="class" id="id_class" class="form-control">
+                                    <option value="">Select Class</option>
+                                    {% for class in classes %}
+                                        <option value="{{ class.id }}">{{ class.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr>
+                    <div class="list-group-flush">
+                        {% for schedule in schedules %}
+                            <div class="list-group-item split-header">
+                                {{ schedule.classe.description }}
+                                <a href="{% url 'schedule:class' schedule.classe.id object.id %}">
+                                    <i class="mdi mdi-1x mdi-open-in-new"></i>
+                                </a>
+                            </div>
+                        {% empty %}
+                            Nothing to see here
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

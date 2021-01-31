@@ -1,0 +1,133 @@
+{% extends 'layouts/main.html' %}
+{% block staf %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>Staff Records</h4>
+        {% if not head and user.user_type == 'SAD' %}
+            <a href="" data-toggle="modal" data-target="#headModal" class="btn btn-sm btn-primary">ADD SCHOOL HEAD</a>
+        {% endif %}
+        {% if user.user_type == 'SH' %}
+            <a href="{% url 'staff:add' %}" class="btn btn-sm btn-primary">ADD STAFF</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errors }}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Staff ID</th>
+                        <th>Full Name</th>
+                        <th>Staff Type</th>
+                        <th>Date Employed</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td width="15%">{% if object.staff_id %}{{ object.staff_id }}{% endif %}</td>
+                            <td width="40%">{{ object.full_name }}</td>
+                            <td width="20%">{{ object.get_staff_type_display }}</td>
+                            <td width="10%">{% if object.date_employed %}{{ object.date_employed }}{% endif %}</td>
+                            <td width="15%">
+                                {% if not object.account_activated and user.user_type == 'SAD' %}
+                                    <a href="" data-toggle="modal" data-target="#activeModal{{ object.id }}" class="btn btn-sm btn-success">ACTIVATE ACCOUNT</a>
+                                {% endif %}
+                                {% if user.user_type == 'SH' %}
+                                    <a href="" title="Details" class="btn btn-xs btn-white">
+                                        <i class="mdi mdi-eye mdi-1x"></i>
+                                    </a>
+                                    <a href="" title="Edit" class="btn btn-xs btn-white">
+                                        <i class="mdi mdi-pencil-box-outline mdi-1x"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="activeModal{{ object.id }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="activeModal{{ object.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header border-0">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Activate {{ object.full_name }}?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="form" value="activate">
+                                        <input type="hidden" name="staff" value="{{ object.id }}">
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input autocomplete="off" type="email" name="email" placeholder="Enter Email Address" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">Nothing to show here</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="headModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">School Head Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="head">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" required name="first_name" placeholder="Enter First Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" name="middle_name" placeholder="Enter Middle Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="text" name="last_name" placeholder="Enter Last Name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input autocomplete="off" type="email" name="email" placeholder="Enter Email Address" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

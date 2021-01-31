@@ -1,0 +1,101 @@
+{% extends 'layouts/main.html' %}
+{% block subj %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ object.description }} | {{ class.description }} - {{ subject.subject_code }} {{ subject.description }}</h4>
+{% endblock %}
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errors }}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="grid">
+        <div class="grid-header">Grade Students</div>
+        <div class="grid-body">
+            {% if prs and prs.count == pupils.count %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Full Name</th>
+                            <th>Class & Exams Score</th>
+                            <th>Total Score</th>
+                            <th>Grade</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for pr in prs %}
+                            <tr>
+                                <td>{{ pr.pupil.pupil_id }}</td>
+                                <td>{{ pr.pupil.full_name }}</td>
+                                <td>{{ pr.class_score }} & {{ pr.exam_score }}</td>
+                                <td>{{ pr.total_score }}</td>
+                                <th>{{ pr.grade }}</th>
+                                <td>
+                                    <a href="" title="Edit Scores" class="btn btn-xs btn-white text-primary">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">Nothing to show here</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Full Name</th>
+                                <th>Class Score</th>
+                                <th>Exams Score</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for pupil in pupils %}
+                                <input type="hidden" name="pupil" value="{{ pupil.pupil.id }}">
+                                <tr>
+                                    <td>{{ pupil.pupil.pupil_id }}</td>
+                                    <td>{{ pupil.pupil.full_name }}</td>
+                                    <td>
+                                        <input required placeholder="Enter class score" type="number" name="class_score" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input required placeholder="Enter exams score" type="number" name="exam_score" class="form-control">
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">Nothing to show here</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if pupils %}
+                        <input type="submit" value="Submit" class="btn btn-sm btn-success">
+                    {% endif %}
+
+                </form>
+            {% endif %}
+
+
+        </div>
+    </div>
+{% endblock %}

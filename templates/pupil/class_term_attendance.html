@@ -1,0 +1,59 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block mc %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ class.description }} Attendance for {{ object.description }}</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 col-lg-10">
+            <div class="grid">
+                <div class="grid-body">
+                    <div class="table-responsive">
+                        {% if attendance %}
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Present Days</th>
+                                    <th>Absent Days</th>
+                                    <th>Total Days</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for pupil in pupils %}
+                                    {% attendance_status pupil.id attendance.id as stat %}
+                                    <tr>
+                                        <td>{{ pupil.full_name }}</td>
+                                        <td>{{ stat.present }}</td>
+                                        <td>{{ stat.absent }}</td>
+                                        <td>{{ stat.total }} / {{ attendance.number_of_days }}</td>
+                                        <td>
+                                            <a href="{% url 'pupil:class-term-attendance-pupil' attendance.id pupil.id %}">
+                                                <i class="mdi mdi-1x mdi-open-in-new"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5">
+                                            Nothing to show here
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            Class attendance has not been initiated yet!
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

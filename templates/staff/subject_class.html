@@ -1,0 +1,52 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block subj %}
+active
+{% endblock %}
+{% block page_title %}
+<h4>{{ object.description }} - {{ subject.subject_code }} {{ subject.description }}</h4>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 col-lg-10">
+            <div class="grid">
+                <div class="grid-header">Academic Sessions</div>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for session in sessions %}
+                            {% session_terms session.id as terms %}
+                            <div class="list-group-item">
+                                <div class="split-header">
+                                    <span class="h5">{{ session.start_date }} - {{ session.end_date }}</span>
+                                    <a title="Click to view terms" data-toggle="collapse" href="#term{{ session.id }}" role="button" aria-expanded="false" aria-controls="term{{ session.id }}">
+                                        <i class="mdi mdi-open-in-new mdi-2x"></i>
+                                    </a>
+                                </div>
+                                <div class="collapse multi-collapse" id="term{{ session.id }}">
+                                    <div class="list-group-flush">
+                                        {% for term in terms %}
+                                            <div class="list-group-item">
+                                                <div class="split-header">
+                                                    <span class="h6">{{ term.description }}</span>
+                                                    <a title="Click to view details" href="{% url 'staff:subject-class-term' subject_id=subject.id class_id=object.id term_id=term.id %}">
+                                                        <i class="mdi mdi-open-in-new mdi-1x"></i>
+
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            Nothing to show here
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'layouts/main.html' %}
+{% block rec %}
+active
+{% endblock %}
+{% block page_title %}
+{% if term %}
+    <div class="split-header">
+        <h4>Student Fee Payments {{ term.description }}</h4>
+        <a href="{% url 'finance:payment-new' %}" class="btn btn-sm btn-info">New Payment</a>
+    </div>
+
+{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="grid grid-body">
+        <div class="grid-title">Search:</div>
+        <form action="" method="get">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="id_first">Search</label>
+                        <input type="text" name="term" placeholder="Search first name, last name" id="id_first" class="form-control">
+                    </div>
+                </div>
+{#                <div class="col">#}
+{#                    <div class="form-group">#}
+{#                        <label for="id_last">Last Name</label>#}
+{#                        <input type="text" name="term" id="id_last" class="form-control">#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="col">
+                    <div class="form-group">
+                        <label for="id_class">Class</label>
+                        <select name="class" id="id_class" class="form-control">
+                            <option value="">-----------</option>
+                            {% for class in classes %}
+                                <option value="{{ class.id }}">{{ class.description }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-info btn-sm">Search</button>
+        </form>
+
+    </div>
+    <div class="grid">
+        <div class="grid-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Amount GHS</th>
+                        <th>Date Paid</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in object_list %}
+                    {% empty %}
+                        <tr>
+                        <td colspan="5">
+                            Nothing to show here
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

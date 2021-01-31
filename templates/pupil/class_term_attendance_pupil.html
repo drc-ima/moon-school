@@ -1,0 +1,46 @@
+{% extends 'layouts/main.html' %}
+{% load school_tags %}
+{% block mc %}
+active
+{% endblock %}
+{% block page_title %}
+<h4>Attendance Records for {{ pupil.full_name }} for {{ object.academic_term.description }}</h4>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+            {% attendance_status pupil.id object.id as stat %}
+                <div class="grid-header split-header">
+                    <span>Present: {{ stat.present }} Days</span>
+                    <span>Absent: {{ stat.absent }} Days</span>
+                    <span>Total: {{ stat.total }} Days</span>
+{#                    {{ attendances.count }} / {{ object.number_of_days }} days#}
+                </div>
+                <div class="grid-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Dates</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for attendance in attendances %}
+                                <tr>
+                                    <td>{{ attendance.date }}</td>
+                                    <td>{{ attendance.get_status_display }}</td>
+                                </tr>
+                            {% empty %}
+                                Nothing to show here
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

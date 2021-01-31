@@ -1,0 +1,72 @@
+{% extends 'layouts/main.html' %}
+{% block ay %}
+    active
+{% endblock %}
+{% block page_title %}
+    <div class="split-header">
+        <h4>{{ object.start_date }} - {{ object.end_date }} Academic Session</h4>
+        <a href="" data-target="#termModal" data-toggle="modal" class="btn btn-sm btn-info">NEW ACADEMIC TERM</a>
+    </div>
+
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+            <div class="grid">
+                <div class="grid-header">Academic Terms</div>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for term in terms %}
+                            <div class="list-group-item split-header {% if term.is_current %}border-left border-primary{% endif %}">
+                                <div>
+                                    <h5><a href="{% url 'school:academic-term' term.id %}">{{ term.description }}</a></h5>
+                                    <small>{{ term.start_date }} - {{ term.end_date }} ({{ term.number_of_weeks }} weeks)</small>
+                                </div>
+                                {% if not term.is_current %}
+                                    <a href="?cur={{ term.id }}" class="btn btn-sm btn-white text-success">Make Current</a>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="termModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="termModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Academic Term</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="assign">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input required type="text" placeholder="Enter Term Description" name="description" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_start">Start Date</label>
+                            <input type="date" name="start" id="id_start" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_start">End Date</label>
+                            <input type="date" name="end" id="id_end" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

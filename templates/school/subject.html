@@ -1,0 +1,79 @@
+{% extends 'layouts/main.html' %}
+{% block man %}
+    active
+{% endblock %}
+{% block page_title %}
+    <h4>{{ object.subject_code }} - {{ object.description }}</h4>
+{% endblock %}
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ errors }}.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <div class="grid">
+                <div class="grid-header">Classes</div>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for class in classes %}
+                            <div class="list-group-item split-header">
+                                <a href="{% url 'school:management-class' class.classe.id %}">{{ class.classe.description }}</a>
+                                {#                                <form action="" method="post">#}
+                                {#                                    {% csrf_token %}#}
+                                {#                                    <button type="submit" class="btn text-danger btn-xs btn-white">#}
+                                {#                                        <i class="mdi mdi-1x mdi-close"></i>#}
+                                {#                                    </button>#}
+                                {#                                </form>#}
+                            </div>
+                        {% empty %}
+                            Nothing to show here
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="grid">
+                <div class="grid-header">Teacher</div>
+                <div class="grid-body">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="form" value="teacher">
+                        <div class="form-group">
+                            <select required onchange="form.submit()" name="teacher" id="" class="custom-select">
+                                <option value="">Assign teacher to this subject</option>
+                                {% for teach in all_teachers %}
+                                    <option value="{{ teach.id }}">{{ teach.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                    <div class="list-group-flush">
+                        {% if object.teacher %}
+                            <div class="list-group-item split-header">
+                                <a href="#">{{ object.teacher.full_name }}</a>
+                                <form action="" method="post">
+                                    <input type="hidden" name="form" value="remteach">
+                                    <input type="hidden" name="teacher" value="{{ object.teacher.id }}">
+                                    {% csrf_token %}
+                                    <button title="Remove Teacher from this subject" type="submit" class="btn text-danger btn-xs btn-white">
+                                        <i class="mdi mdi-1x mdi-close"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% else %}
+                            No teacher assigned to this subject
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
