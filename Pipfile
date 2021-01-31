@@ -9,6 +9,10 @@ verify_ssl = true
 django = "*"
 djangorestframework = "*"
 num2words = "*"
+whitenoise = "*"
+gunicorn = "*"
+psycopg2 = "*"
+dj-database-url = "*"
 
 [requires]
 python_version = "3.6"
