@@ -112,6 +112,13 @@ def signup_school(request):
         except School.DoesNotExist:
             pass
 
+        try:
+            User.objects.get(username=ss1['email'])
+            context['errors'] = "This email has already been registered"
+            return render(request, 'account/signup2.html', context)
+        except User.DoesNotExist:
+            pass
+
         inst_count = School.objects.count() + 1
 
         inst_count = '{0:04}'.format(inst_count)
