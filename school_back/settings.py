@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'apps.schedule',
     'apps.school',
     'apps.staff',
-    'num2words',
+    # 'num2words',
     'rest_framework',
 ]
 
