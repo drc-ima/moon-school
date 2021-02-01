@@ -5,6 +5,7 @@ app_name = 'school'
 
 
 urlpatterns = [
+    path('', myschool, name='myschool'),
     path('add/', SchoolSignup.as_view()),
     path('management/', management, name='management'),
     path('management/class/<id>/', class_detail, name='management-class'),

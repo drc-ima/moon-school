@@ -99,6 +99,32 @@ class SchoolSignup(APIView):
 
 
 @login_required()
+def myschool(request):
+    school = School.objects.get(school_id=request.user.school_id)
+    context = {
+        'object': school
+    }
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        logo = request.FILES.get('logo')
+        phone_number = request.POST.get('phone')
+
+        school.name = name
+
+        if request.FILES.get('logo'):
+            school.logo = logo
+
+        school.phone_number = phone_number
+
+        school.save()
+
+        return redirect('school:myschool')
+
+    return render(request, 'school/myschool.html', context)
+
+
+
+@login_required()
 def management(request):
     context = {
         'classes': Class.objects.filter(school_id=request.user.school_id),

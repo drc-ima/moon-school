@@ -1,0 +1,47 @@
+{% extends 'layouts/main.html' %}
+{% load static %}
+{% block sch %}
+active
+{% endblock %}
+{% block page_title %}
+    <div class="row">
+        <div class="col-md-2 col-sm-2 col-xs-3 col-lg-1">
+            <div class="display-avatar">
+                <img class="profile-img img-md rounded-circle" src="{% if object.logo %}{{ object.logo.url }}{% else %}{% static 'images/jee.png' %}{% endif %}" alt="profile image">
+            </div>
+        </div>
+        <div class="col-md-7 col-lg-8 col-sm-7 col-xs-6 py-1">
+            <h4>{{ object.name }}</h4>
+            <p>{{ object.domain }}</p>
+{#            <p>{{ object.role.role }}{% if object.department %} ∙ {{ object.department.name }}{% endif %}</p>#}
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-10 col-lg-10">
+            <div class="grid">
+                <div class="grid-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_name">Name</label>
+                            <input type="text" value="{{ object.name }}" name="name" id="id_name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_phone">Phone Number</label>
+                            <input type="text" value="{{ object.phone_number }}" name="phone" id="id_phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_logo">Logo</label>
+                            <input type="file" {% if object.logo %}value="{{ object.logo }}"{% endif %} name="logo" id="id_logo" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-sm btn-success">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

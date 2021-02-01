@@ -109,6 +109,12 @@
                         <i class="mdi mdi-account-multiple-outline link-icon"></i>
                     </a>
                 </li>
+                <li class="{% block sch %}{% endblock %}">
+                    <a href="{% url 'school:myschool' %}">
+                        <span class="link-title">My School</span>
+                        <i class="mdi mdi-office-building link-icon"></i>
+                    </a>
+                </li>
             {% endif %}
             {% if user.user_type == 'SH' %}
                 <li class="{% block ay %}{% endblock %}">
