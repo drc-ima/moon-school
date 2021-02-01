@@ -148,7 +148,7 @@ def signup_school(request):
         user.save()
         school.save()
 
-        ss1 = []
+        request.session['ss1'] = {}
 
         return redirect('login')
 

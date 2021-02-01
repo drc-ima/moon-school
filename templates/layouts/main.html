@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-{% school as school %}
+    {% school as school %}
     <!--/*color: yellow;*/ -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock %} {% if school %} | {{ school.name }} {% endif %} | ScMoon</title>
+    <title>{% block title %}{% endblock %} {% if school %} | {{ school.name }} {% endif %} | Moon School</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'vendors/iconfonts/mdi/css/materialdesignicons.css' %}">
     <!-- endinject -->
@@ -19,7 +19,7 @@
     <!-- Layout style -->
     <link rel="stylesheet" href="{% static 'css/demo_1/style.css' %}">
     <!-- Layout style -->
-    <link rel="shortcut icon" href="{% static 'images/TMHEMMA.png' %}" />
+    <link rel="shortcut icon" href="{% static 'images/icon.png' %}" />
     <style>
         /*li .active {*/
 
@@ -30,8 +30,12 @@
 <body class="header-fixed" >
 <!-- partial:partials/_header.html -->
 <nav class="t-header">
-    <div class="t-header-brand-wrapper h4">
-        ScMoon
+    <div class="t-header-brand-wrapper">
+        <a href="#">
+            <img class="logo" src="{% static 'images/TMHEMMA.png' %}" alt="">
+            <img class="logo-mini" src="{% static 'images/icon.png' %}" alt="">
+        </a>
+
     </div>
     <div class="t-header-content-wrapper">
         <div class="t-header-content">
