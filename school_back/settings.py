@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+AUTH_USER_MODEL = 'account.User'
+
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -80,7 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'school_back.wsgi.application'
-AUTH_USER_MODEL = 'account.User'
+
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -141,6 +143,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -157,9 +162,6 @@ REST_FRAMEWORK = {
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
 }
-
-LOGIN_URL = 'login'
-LOGOUT_REDIRECT_URL = 'login'
 
 try:
     from school_back.local_settings import *
