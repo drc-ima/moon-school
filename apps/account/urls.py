@@ -4,8 +4,8 @@ app_name = 'account'
 
 
 urlpatterns = [
-    path('register/user/', signup_user, name='register-user'),
     path('register/school/', signup_school, name='register-school'),
+    path('register/user/', signup_user, name='register-user'),
     path('', dashboard, name='dashboard'),
     path('logout/', user_logout, name='logout')
 ]

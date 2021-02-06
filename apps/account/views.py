@@ -8,7 +8,7 @@ from apps.account.models import User
 from apps.school.models import School
 from utils.randoms import institution_id, account_id
 
-
+# from django.utils.deprecation import RemovedInDjango40Warning
 
 @login_required()
 def dashboard(request):
@@ -85,11 +85,6 @@ def signup_user(request):
 
 
 def signup_school(request):
-    name = request.POST.get('institution', None)
-    logo = request.FILES.get('logo', None)
-    phone_number = request.POST.get('phone_number', None)
-    domain = request.POST.get('domain', None)
-    gps = request.POST.get('gps', None)
 
     # ss1 = None
 
@@ -104,11 +99,16 @@ def signup_school(request):
     }
 
     if request.method == 'POST':
+        name = request.POST.get('institution', None)
+        logo = request.FILES.get('logo', None)
+        phone_number = request.POST.get('phone_number', None)
+        domain = request.POST.get('domain', None)
+        gps = request.POST.get('gps', None)
 
         try:
             School.objects.get(domain=domain)
             context['errors'] = "There's already a school with this domain registered"
-            return render(request, 'account/signup2.html', context)
+            return render(request, 'account/signup2.html', context, status=400)
         except School.DoesNotExist:
             pass
 

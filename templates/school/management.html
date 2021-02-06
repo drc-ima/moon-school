@@ -56,6 +56,41 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="grade" role="tabpanel" aria-labelledby="grade-tab">
+                    {% if pass_grade %}
+                        <span id="grade_text" class="font-weight-bold h6">Pass Grade: {{ pass_grade.score }} %</span> <i id="pass_edit" title="Click to edit pass grade" class="text-primary mdi mdi-pencil"></i>
+                        <form action="" hidden id="pass_form" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form" value="epass">
+                            <div class="row form-group">
+                                <label for="id_pass_grade" class="col-md-2 col-lg-2">Pass Grade %</label>
+                                <div class="col-md-5 col-lg-5">
+                                    <input type="text" value="{{ pass_grade.score }}" required autocomplete="off" pattern=".*[^-\sa-zA-Z]" title="Please enter positive numbers" placeholder="Enter pass grade here" name="egrade" id="id_pass_grade" class="form-control form-control-lg">
+                                </div>
+                                <div class="col-md-2 col-lg-2">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="mdi mdi-content-save"></i>
+                                    </button>
+                                    <button type="button" id="form_close" class="btn btn-sm btn-danger">
+                                        <i class="mdi mdi-close"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="form" value="pass">
+                            <div class="row form-group">
+                                <label for="id_pass_grade" class="col-md-2 col-lg-2">Pass Grade %</label>
+                                <div class="col-md-5 col-lg-5">
+                                    <input type="text" required autocomplete="off" pattern=".*[^-\sa-zA-Z]" title="Please enter positive numbers" placeholder="Enter pass grade here" name="grade" id="id_pass_grade" class="form-control form-control-lg">
+                                </div>
+                                <div class="col-md-1 col-lg-1">
+                                    <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
                     <div class="row list-group-flush">
                         {% for grade in grades %}
                             <div class="col-md-5 col-lg-5 mr-1 list-group-item mb-2 split-header">
@@ -165,4 +200,19 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $("#pass_edit").on('click', function () {
+            $("#pass_form").prop('hidden', false);
+            $("#grade_text").prop('hidden', true);
+            $("#pass_edit").prop('hidden', true);
+        });
+
+        $("#form_close").on('click', function () {
+            $("#pass_form").prop('hidden', true);
+            $("#grade_text").prop('hidden', false);
+            $("#pass_edit").prop('hidden', false);
+        })
+    </script>
 {% endblock %}

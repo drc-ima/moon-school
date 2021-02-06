@@ -15,7 +15,7 @@ from apps.account.serializers import UserSerializer
 from apps.pupil.models import Class, ClassSubject, Pupil, PupilClass
 from apps.schedule.models import ClassSchedule
 from apps.school import forms
-from apps.school.models import GradeScheme, AcademicYear, AcademicTerm, Attendance, PupilResult, Result
+from apps.school.models import GradeScheme, AcademicYear, AcademicTerm, Attendance, PupilResult, Result, PassGrade
 from apps.school.serializers import *
 from apps.staff.models import Subject, Staff, SubjectTeacher
 from utils.randoms import *
@@ -123,14 +123,22 @@ def myschool(request):
     return render(request, 'school/myschool.html', context)
 
 
-
 @login_required()
 def management(request):
+
+    pass_grade = None
+
+    try:
+        pass_grade = PassGrade.objects.get(school_id=request.user.school_id)
+    except PassGrade.DoesNotExist:
+        pass
+
     context = {
         'classes': Class.objects.filter(school_id=request.user.school_id),
         'subjects': Subject.objects.filter(school_id=request.user.school_id),
         'grades': GradeScheme.objects.filter(school_id=request.user.school_id),
         'errors': '',
+        'pass_grade': pass_grade
     }
 
     if request.method == 'POST':
@@ -190,6 +198,44 @@ def management(request):
             grade.delete()
 
             return redirect('school:management')
+        elif form == 'pass':
+            grde = request.POST.get('grade')
+
+            if float(grde) > 100.0:
+                context['errors'] = 'Pass grade should not be more than 100'
+                return render(request, 'school/management.html', context)
+
+            try:
+                PassGrade.objects.get(school_id=request.user.school_id)
+                context['errors'] = 'You have already set pass grade'
+                return render(request, 'school/management.html', context)
+            except PassGrade.DoesNotExist:
+                pass
+
+            pg = PassGrade(
+                score=grde,
+                school_id=request.user.school_id,
+                created_by=request.user
+            )
+            pg.save()
+
+            return redirect('school:management')
+        elif form == 'epass':
+            grde = request.POST.get('egrade')
+
+            if float(grde) > 100.0:
+                context['errors'] = 'Pass grade should not be more than 100'
+                return render(request, 'school/management.html', context)
+
+            try:
+                epg = PassGrade.objects.get(school_id=request.user.school_id)
+                epg.score = grde
+                epg.save()
+                return redirect('school:management')
+            except PassGrade.DoesNotExist:
+                context['errors'] = 'Something wrong happened somewhere'
+                return render(request, 'school/management.html', context)
+
     return render(request, 'school/management.html', context)
 
 
@@ -342,10 +388,14 @@ def academics(request):
         start_date = request.POST.get('start')
         end_date = request.POST.get('end')
 
+        if datetime.datetime.strptime(start_date, '%Y-%m-%d') > datetime.datetime.strptime(end_date, '%Y-%m-%d'):
+            context['errors'] = 'Invalid date range'
+            return render(request, 'school/academics.html', context, status=400)
+
         try:
             AcademicYear.objects.get(start_date__lte=start_date, end_date__gte=end_date)
             context['errors'] = 'Invalid academic session'
-            return render(request, 'school/academics.html', context)
+            return render(request, 'school/academics.html', context, status=400)
         except AcademicYear.DoesNotExist:
             pass
 
@@ -388,10 +438,14 @@ def academic_details(request, id):
         start_date = request.POST.get('start')
         end_date = request.POST.get('end')
 
+        if datetime.datetime.strptime(start_date, '%Y-%m-%d') > datetime.datetime.strptime(end_date, '%Y-%m-%d'):
+            context['errors'] = 'Invalid date range'
+            return render(request, 'school/academic_details.html', context, status=400)
+
         try:
             AcademicTerm.objects.get(academic_year=academic, start_date__lte=start_date, end_date__gte=end_date, school_id=request.user.school_id)
             context['errors'] = 'Invalid date range'
-            return render(request, 'school/academic_details.html', context)
+            return render(request, 'school/academic_details.html', context, status=400)
         except AcademicTerm.DoesNotExist:
             pass
         sd = datetime.datetime.strptime(start_date, '%Y-%m-%d')
@@ -417,7 +471,7 @@ def academic_details(request, id):
 
         return redirect('school:academic-details', id)
 
-    return render(request, 'school/academic_details.html', context)
+    return render(request, 'school/academic_details.html', context, status=200)
 
 
 @login_required()

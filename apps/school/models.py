@@ -239,6 +239,21 @@ class GradeScheme(models.Model):
         return f"{self.from_score} - {self.to_score} | {self.grade}"
 
 
+class PassGrade(models.Model):
+    score = models.DecimalField(decimal_places=2, max_digits=10, default=0.00, blank=True, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, blank=True, null=True,
+                                   related_name='pass_grades')
+    created_at = models.DateTimeField(default=timezone.now)
+    school_id = models.CharField(blank=True, null=True, max_length=200)
+
+    class Meta:
+        db_table = 'pass_grade'
+        # ordering = ['-from_score', '-to_score', '-grade']
+
+    def __str__(self):
+        return f"{self.score}"
+
+
 @receiver(post_save, sender=AcademicYear)
 def current_year(sender, created, instance, *args, **kwargs):
     school_id = instance.school_id
