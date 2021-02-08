@@ -512,6 +512,11 @@ def term_details(request, id):
             res.save()
 
             return redirect('school:academic-term', id)
+        elif open_result == 'PROMO':
+           term.is_promotion = True
+           term.save()
+           return redirect('school:academic-term', id)
+
     except:pass
 
     if request.method == 'POST':

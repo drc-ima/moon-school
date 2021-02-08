@@ -1,4 +1,12 @@
 {% extends 'layouts/main.html' %}
+{% load school_tags %}
 {% block dash %}
-active
+    active
+{% endblock %}
+{% block content %}
+    {% if user.user_type == 'SH' %}
+        {% head_dashboard %}
+    {% elif user.user_type == 'CT' %}
+        {% ct_dashboard %}
+    {% endif %}
 {% endblock %}

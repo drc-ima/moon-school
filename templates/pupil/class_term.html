@@ -32,7 +32,7 @@
                             <td>{{ res.pupil.full_name }}</td>
                             <td>{{ res.get_status_display }}</td>
                             <td>{{ avg.avg }}</td>
-                            <td>{{ avg.grade }}</td>
+                            <td {% if avg.avg > pass_grade.score %}class="text-success"{% else %}class="text-danger"{% endif %}>{{ avg.grade }}</td>
                             <td>
                                 <a href="{% url 'pupil:class-term-pupil' res.id %}">
                                     <i class="mdi mdi-1x mdi-open-in-new"></i>

@@ -1,0 +1,86 @@
+{% load static %}
+<div class="row">
+    <div class="col-md-3 col-sm-6 col-6 equel-grid">
+        <div class="grid">
+            <div class="grid-body text-gray">
+                <div class="d-flex justify-content-between">
+                    <p>{{ staffs }}</p>
+
+                </div>
+                <p class="text-black">Staffs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-6 equel-grid">
+        <div class="grid">
+            <div class="grid-body text-gray">
+                <div class="d-flex justify-content-between">
+                    <p>{{ students }}</p>
+                </div>
+                <p class="text-black">Students</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="grid">
+            <div class="grid-body overflow-auto">
+                <h2 class="grid-title">Class Attendance for Current Term</h2>
+                <div class="item-wrapper">
+                    <canvas id="chartjs-staked-bar-chart" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'vendors/js/core.js' %}"></script>
+<script src="{% static 'vendors/chartjs/Chart.min.js' %}"></script>
+<script src="{% static 'js/charts/chartjs.addon.js' %}"></script>
+<script>
+    var classes = {{ classes | safe }};
+    var present = {{ present | safe }};
+    var absent = {{ absent | safe }};
+    if ($("#chartjs-staked-bar-chart").length) {
+        var BarData = {
+            labels: classes,
+            datasets: [{
+                label: 'Present',
+                data: present,
+                backgroundColor: "#00cccc",
+                borderColor: "#00cccc",
+                borderWidth: 0
+            },
+                {
+                    label: 'Absent',
+                    data: absent,
+                    backgroundColor: "#7db8f9",
+                    borderColor: "#7db8f9",
+                    borderWidth: 0
+                }
+            ]
+        };
+        var barChartCanvas = $("#chartjs-staked-bar-chart").get(0).getContext("2d");
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: BarData,
+            options: {
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                },
+                legend: false
+            }
+        });
+    }
+</script>

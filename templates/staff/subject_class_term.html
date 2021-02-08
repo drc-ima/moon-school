@@ -39,11 +39,43 @@
                                 <td>{{ pr.total_score }}</td>
                                 <th>{{ pr.grade }}</th>
                                 <td>
-                                    <a href="" title="Edit Scores" class="btn btn-xs btn-white text-primary">
+                                    <a href="#" title="Edit Scores" data-toggle="modal" data-target="#scoreModal{{ pr.id }}" class="btn btn-xs btn-white text-primary">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                 </td>
                             </tr>
+                            <div class="modal fade" id="scoreModal{{ pr.id }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="scoreModal{{ pr.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Edit Score for {{ pr.pupil.full_name }}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="form" value="edit">
+                                            <input type="hidden" name="epupil" value="{{ pr.pupil.id }}">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label for="id_class">Class Score</label>
+                                                    <input required id="id_class" placeholder="Enter class score" step="any" value="{{ pr.class_score }}" type="number" name="eclass_score" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="id_exams">Exams Score</label>
+                                                    <input required id="id_exams" placeholder="Enter exams score" step="any" value="{{ pr.exam_score }}" type="number" name="eexam_score" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
                         {% empty %}
                             <tr>
                                 <td colspan="4">Nothing to show here</td>
@@ -56,6 +88,7 @@
             {% else %}
                 <form action="" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="form" value="score">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -73,10 +106,10 @@
                                     <td>{{ pupil.pupil.pupil_id }}</td>
                                     <td>{{ pupil.pupil.full_name }}</td>
                                     <td>
-                                        <input required placeholder="Enter class score" type="number" name="class_score" class="form-control">
+                                        <input required placeholder="Enter class score" step="any" type="number" name="class_score" class="form-control">
                                     </td>
                                     <td>
-                                        <input required placeholder="Enter exams score" type="number" name="exam_score" class="form-control">
+                                        <input required placeholder="Enter exams score" step="any" type="number" name="exam_score" class="form-control">
                                     </td>
                                 </tr>
                             {% empty %}
@@ -91,11 +124,8 @@
                     {% if pupils %}
                         <input type="submit" value="Submit" class="btn btn-sm btn-success">
                     {% endif %}
-
                 </form>
             {% endif %}
-
-
         </div>
     </div>
 {% endblock %}

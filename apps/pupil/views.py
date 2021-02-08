@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from apps.pupil.models import Class, Pupil, ClassSubject
 from apps.school.models import AcademicYear, AcademicTerm, Result, PupilResult, PupilResultSubject, Attendance, \
-    PupilAttendance
+    PupilAttendance, PassGrade
 from apps.staff.models import Staff
 
 
@@ -39,6 +39,12 @@ def class_term_results(request, term_id, class_id):
         result = Result.objects.get(school_id=request.user.school_id, academic_term=term)
     except Result.DoesNotExist:pass
 
+    pg = None
+
+    try:
+        pg = PassGrade.objects.get(school_id=request.user.school_id)
+    except PassGrade.DoesNotExist:pass
+
     results = PupilResult.objects.filter(result=result, classe=classe, school_id=request.user.school_id)
 
     context = {
@@ -47,6 +53,7 @@ def class_term_results(request, term_id, class_id):
         'pupils': pupils,
         'result': result,
         'results': results,
+        'pass_grade': pg
     }
 
     try:

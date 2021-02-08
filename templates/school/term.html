@@ -7,12 +7,20 @@
         <span>
             <h4>{{ object.description }}</h4>
             <p>{{ object.start_date }} - {{ object.end_date }} ({{ object.number_of_weeks }} weeks)</p>
+            {% if object.is_promotion %}
+            <small>Promotion Term</small>
+            {% endif %}
         </span>
-        {% if not result %}
-            <a href="?result=OPEN" class="btn btn-sm btn-info">OPEN FOR PUPIL RESULTS</a>
-        {% elif result and result.status == 0 %}
-            <a href="" class="btn btn-sm btn-inverse-warning">CLOSE FOR PUPIL RESULTS</a>
-        {% endif %}
+        <span>
+            {% if not object.is_promotion %}
+                <a href="?result=PROMO" class="btn btn-sm btn-white">SET AS PROMOTION TERM</a>
+            {% endif %}
+            {% if not result %}
+                <a href="?result=OPEN" class="btn btn-sm btn-info">OPEN FOR PUPIL RESULTS</a>
+            {% elif result and result.status == 0 %}
+                <a href="" class="btn btn-sm btn-inverse-warning">CLOSE FOR PUPIL RESULTS</a>
+            {% endif %}
+        </span>
     </div>
 
 {% endblock %}

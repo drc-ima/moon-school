@@ -1,0 +1,121 @@
+{% load static %}
+<div class="row">
+    <div class="col-md-3 col-sm-6 col-6 equel-grid">
+        <div class="grid">
+            <div class="grid-body text-gray">
+                <div class="d-flex justify-content-between">
+                    <p>{{ students }} Students</p>
+
+                </div>
+                <p class="text-black">{{ class.description }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 col-6 equel-grid">
+        <div class="grid">
+            <div class="grid-body text-gray">
+                <div class="d-flex justify-content-between">
+                    <p>{{ subjects.count }}</p>
+                </div>
+                <p class="text-black">Subjects</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-6">
+        <div class="grid">
+            <div class="grid-body overflow-auto">
+                <div class="grid-title split-header">
+                    <span>
+                        <h6>Class Attendance for Current Term</h6>
+                        <small>{{ week.0.date }} - {{ week.4.date }}</small>
+                    </span>
+
+                    <div>
+                        <a href="?n={{ nav.0 }}" class="btn btn-xs btn-white">
+                            <i class="mdi mdi-chevron-left"></i>
+                        </a>
+                        <a href="{% url 'account:dashboard' %}" class="btn btn-xs btn-white">
+                            <i class="mdi mdi-crosshairs-gps"></i>
+                        </a>
+                        <a href="?n={{ nav.1 }}" class="btn btn-xs btn-white">
+                            <i class="mdi mdi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="item-wrapper">
+                    <canvas id="chartjs-staked-bar-chart" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6">
+        <div class="grid">
+            <div class="grid-body">
+                <h2 class="grid-title">My Schedules for Today</h2>
+                <div class="grid-body">
+                    <div class="list-group-flush">
+                        {% for schedule in schedules %}
+                            <div class="list-group-item split-header">
+                                <span>{{ schedule.hour }} - {{ schedule.subject }}</span>
+                                <span>{{ schedule.class_schedule.classe.description }}</span>
+                            </div>
+                        {% empty %}
+                            No schedules today
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'vendors/js/core.js' %}"></script>
+<script src="{% static 'vendors/chartjs/Chart.min.js' %}"></script>
+<script src="{% static 'js/charts/chartjs.addon.js' %}"></script>
+<script>
+    var labels = {{ labels | safe }};
+    var present = {{ present | safe }};
+    var absent = {{ absent | safe }};
+    if ($("#chartjs-staked-bar-chart").length) {
+        var BarData = {
+            labels: labels,
+            datasets: [{
+                label: 'Present',
+                data: present,
+                backgroundColor: "#00cccc",
+                borderColor: "#00cccc",
+                borderWidth: 0
+            },
+                {
+                    label: 'Absent',
+                    data: absent,
+                    backgroundColor: "#7db8f9",
+                    borderColor: "#7db8f9",
+                    borderWidth: 0
+                }
+            ]
+        };
+        var barChartCanvas = $("#chartjs-staked-bar-chart").get(0).getContext("2d");
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: BarData,
+            options: {
+                tooltips: {
+                    mode: 'index',
+                    intersect: false
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                },
+                legend: false
+            }
+        });
+    }
+</script>

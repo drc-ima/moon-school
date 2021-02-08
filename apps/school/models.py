@@ -100,6 +100,7 @@ class AcademicTerm(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(blank=True, null=True)
+    is_promotion = models.BooleanField(blank=True, null=True)
     number_of_weeks = models.IntegerField(blank=True, null=True, default=0)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, blank=True, null=True,
                                    related_name='academic_terms')
@@ -189,6 +190,7 @@ class PupilResult(models.Model):
 
     class Meta:
         db_table = 'pupil_result'
+        # ordering = ('-grade',)
 
     def __str__(self):
         return f"{self.pupil.full_name()} - {self.result}"
@@ -213,7 +215,7 @@ class PupilResultSubject(models.Model):
 
     class Meta:
         db_table = 'pupil_result_subject'
-        ordering = ['-grade']
+        ordering = ['subject__description']
 
     def __str__(self):
         return f"{self.subject.description} - {self.pupil_result}"
@@ -264,5 +266,14 @@ def current_year(sender, created, instance, *args, **kwargs):
 @receiver(post_save, sender=AcademicTerm)
 def current_term(sender, created, instance, *args, **kwargs):
     school_id = instance.school_id
-    if instance.is_current == True:
+    if instance.is_current:
         AcademicTerm.objects.filter(school_id=school_id).exclude(id=instance.id).update(is_current=False)
+
+
+@receiver(post_save, sender=AcademicTerm)
+def promotion_term(sender, created, instance, *args, **kwargs):
+    school_id = instance.school_id
+    academic_year = instance.academic_year
+
+    if instance.is_promotion:
+        AcademicTerm.objects.filter(school_id=school_id, academic_year=academic_year).exclude(id=instance.id).update(is_promotion=False)

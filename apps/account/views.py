@@ -12,7 +12,10 @@ from utils.randoms import institution_id, account_id
 
 @login_required()
 def dashboard(request):
-    return render(request, 'account/dashboard.html')
+    context = {
+        'request': request
+    }
+    return render(request, 'account/dashboard.html', context)
 
 
 def user_login(request):

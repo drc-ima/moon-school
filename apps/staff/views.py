@@ -217,105 +217,145 @@ def subject_class_term(request, subject_id, class_id, term_id):
 
     if request.method == 'POST':
         # print(request.POST)
-        class_score = request.POST.getlist('class_score')
-        exam_score = request.POST.getlist('exam_score')
-        pupil = request.POST.getlist('pupil')
+        form = request.POST.get('form')
 
-        for pup in range(len(pupil)):
+        if form == 'score':
+            class_score = request.POST.getlist('class_score')
+            exam_score = request.POST.getlist('exam_score')
+            pupil = request.POST.getlist('pupil')
+
+            for pup in range(len(pupil)):
+                try:
+                    pup_obj = Pupil.objects.get(id=pupil[pup])
+                    pup_class = class_score[pup]
+                    pup_exam = exam_score[pup]
+                    if (float(pup_class) + float(pup_exam)) > 100.0:
+                        context['errors'] = f"Class score ({pup_class}) and exams score ({pup_exam}) for {pup_obj.full_name()} is more than 100%"
+                        return render(request, 'staff/subject_class_term.html', context)
+                    # print(pup_obj.full_name() + ' Class: ' + class_score[pup] + ' Exams: ' + exam_score[pup])
+
+                    score = pup_class + pup_exam
+                    try:
+                        GradeScheme.objects.get(from_score__lte=score, to_score__gte=score,
+                                                    school_id=request.user.school_id)
+                    except GradeScheme.DoesNotExist:
+                        context['errors'] = 'Score is out of grade scheme'
+                        return render(request, 'staff/subject_class_term.html', context)
+                except:pass
+
+            for pup in range(len(pupil)):
+                try:
+                    pup_obj = Pupil.objects.get(id=pupil[pup], school_id=request.user.school_id)
+                    pup_class = float(class_score[pup])
+                    pup_exam = float(exam_score[pup])
+                    pupil_result = PupilResult.objects.get(result=result, classe=classe, pupil=pup_obj, school_id=request.user.school_id)
+                    score = pup_class + pup_exam
+                    grade = GradeScheme.objects.get(from_score__lte=score, to_score__gte=score, school_id=request.user.school_id)
+
+                    nprs = PupilResultSubject(
+                        subject=subject,
+                        pupil_result=pupil_result,
+                        result=result,
+                        class_score=pup_class,
+                        exam_score=pup_exam,
+                        pupil=pup_obj,
+                        grade=grade.grade,
+                        created_by=request.user,
+                        school_id=request.user.school_id
+                    )
+
+                    nprs.save()
+                    # return redirect('staff:subject-class-term', subject_id, class_id, term_id)
+                except:pass
+
+            # for data in request.POST:
+            #     print(data)
+            #     class_score = request.POST.get(data if data == 'class_score' else None)
+            #     print(class_score)
+            # for pupil in range(len(pupils)):
+            #
+            #     # class_score = class_score[pupil]
+            #     # exam_score = exam_score[pupil]
+            #     print(str(pupil) + ' = ' + 'Class ' + class_score[pupil] + ' Exams ' + exam_score[pupil])
+
+            # for data in request.POST:
+            #     if re.search('[0-9]', data):
+            #         data = data.split("-")
+            #         # print(data)
+            #         if data[1] == 'class_score':
+            #             class_score = request.POST.get(f"{data[0]}-{data[1]}")
+            #             # request.session['class_score'] = None
+            #             request.session[f"{data[0]}-class_score"] = class_score
+            #             pupil = None
+            #             # print(class_score)
+            #             try:
+            #                 pupil = Pupil.objects.get(id=data[0], school_id=request.user.school_id)
+            #                 #print('Class score for ' + pupil.full_name() + ' ' + class_score)
+            #             except:pass
+            #                 #print('Error class')
+            #
+            # for data in request.POST:
+            #     if re.search('[0-9]', data):
+            #         data = data.split("-")
+            #         exam_score = request.POST.get(f"{data[0]}-{data[1]}") if data[1] == 'exam_score' else 0.0
+            #         class_score = request.POST.get(f"{data[0]}-{data[1]}") if data[1] == 'class_score' else 0.0
+            #         if data[1] == 'class_score':
+            #             pass
+            #             # class_score = request.session[f"{data[0]}-class_score"]
+            #             # try:
+            #             #     pupil = Pupil.objects.get(id=data[0], school_id=request.user.school_id)
+            #             #     print('Pupil: '+ pupil.full_name() + ' Exams: ' + exam_score + ' Class: ' + class_score)
+            #             #     score = float(exam_score) + float(class_score)
+            #             #     if score > 100.0:
+            #             #         context['errors'] = f"Class {class_score} and exams {exam_score} score recorded for {pupil.full_name()} is more than 100 percent"
+            #             #         return render(request, 'staff/subject_class_term.html', context)
+            #             #     # class_score = request.session['class_score']
+            #             #     #print('Exam score ' + pupil.full_name() + ' ' + exam_score)
+            #             #     # score = float(exam_score) + float(class_score)
+            #             #     # print(class_score)
+            #             #
+            #             #     # request.session['class_score'] = None
+            #             # except Pupil.DoesNotExist:pass
+            #                 #print('error exams')
+            #         elif data[1] == 'exam_score':
+            #
+            #             try:
+            #                 pupil = Pupil.objects.get(id=data[0])
+            #                 print(f'{pupil.full_name()} Class: {class_score} Exams: {exam_score}')
+            #             except Pupil.DoesNotExist:pass
+
+            return redirect('staff:subject-class-term', subject_id, class_id, term_id)
+            # return render(request, 'staff/subject_class_term.html', context)
+        elif form == 'edit':
+            class_score = request.POST.get('eclass_score')
+            exam_score = request.POST.get('eexam_score')
+            pupil_id = request.POST.get('epupil')
+
+            pupil = Pupil.objects.get(id=pupil_id)
+
+            if (float(class_score) + float(exam_score)) > 100.0:
+                context[
+                    'errors'] = f"Class score ({classe}) and exams score ({exam_score}) for {pupil.full_name()} is more than 100%"
+                return render(request, 'staff/subject_class_term.html', context)
+            score = float(class_score) + float(exam_score)
+            grade = None
             try:
-                pup_obj = Pupil.objects.get(id=pupil[pup])
-                pup_class = class_score[pup]
-                pup_exam = exam_score[pup]
-                if (float(pup_class) + float(pup_exam)) > 100.0:
-                    context['errors'] = f"Class score ({pup_class}) and exams score ({pup_exam}) for {pup_obj.full_name()} is more than 100%"
-                    return render(request, 'staff/subject_class_term.html', context)
-                # print(pup_obj.full_name() + ' Class: ' + class_score[pup] + ' Exams: ' + exam_score[pup])
-            except:pass
+                grade = GradeScheme.objects.get(from_score__lte=score, to_score__gte=score,
+                                            school_id=request.user.school_id)
+            except GradeScheme.DoesNotExist:
+                context['errors'] = 'Score is out of grade scheme'
+                return render(request, 'staff/subject_class_term.html', context)
 
-        for pup in range(len(pupil)):
-            try:
-                pup_obj = Pupil.objects.get(id=pupil[pup], school_id=request.user.school_id)
-                pup_class = float(class_score[pup])
-                pup_exam = float(exam_score[pup])
-                pupil_result = PupilResult.objects.get(result=result, classe=classe, pupil=pup_obj, school_id=request.user.school_id)
-                score = pup_class + pup_exam
-                grade = GradeScheme.objects.get(from_score__lte=score, to_score__gte=score, school_id=request.user.school_id)
+            pupil_result = PupilResult.objects.get(result=result, classe=classe, pupil=pupil,
+                                                   school_id=request.user.school_id)
+            pupil_subject_result = PupilResultSubject.objects.get(subject=subject, pupil_result=pupil_result, result=result, pupil=pupil)
 
-                nprs = PupilResultSubject(
-                    subject=subject,
-                    pupil_result=pupil_result,
-                    result=result,
-                    class_score=pup_class,
-                    exam_score=pup_exam,
-                    pupil=pup_obj,
-                    grade=grade.grade,
-                    created_by=request.user,
-                    school_id=request.user.school_id
-                )
+            pupil_subject_result.class_score = class_score
+            pupil_subject_result.exam_score = exam_score
+            pupil_subject_result.grade = grade.grade
+            pupil_subject_result.save()
 
-                nprs.save()
-                # return redirect('staff:subject-class-term', subject_id, class_id, term_id)
-            except:pass
-
-        # for data in request.POST:
-        #     print(data)
-        #     class_score = request.POST.get(data if data == 'class_score' else None)
-        #     print(class_score)
-        # for pupil in range(len(pupils)):
-        #
-        #     # class_score = class_score[pupil]
-        #     # exam_score = exam_score[pupil]
-        #     print(str(pupil) + ' = ' + 'Class ' + class_score[pupil] + ' Exams ' + exam_score[pupil])
-
-        # for data in request.POST:
-        #     if re.search('[0-9]', data):
-        #         data = data.split("-")
-        #         # print(data)
-        #         if data[1] == 'class_score':
-        #             class_score = request.POST.get(f"{data[0]}-{data[1]}")
-        #             # request.session['class_score'] = None
-        #             request.session[f"{data[0]}-class_score"] = class_score
-        #             pupil = None
-        #             # print(class_score)
-        #             try:
-        #                 pupil = Pupil.objects.get(id=data[0], school_id=request.user.school_id)
-        #                 #print('Class score for ' + pupil.full_name() + ' ' + class_score)
-        #             except:pass
-        #                 #print('Error class')
-        #
-        # for data in request.POST:
-        #     if re.search('[0-9]', data):
-        #         data = data.split("-")
-        #         exam_score = request.POST.get(f"{data[0]}-{data[1]}") if data[1] == 'exam_score' else 0.0
-        #         class_score = request.POST.get(f"{data[0]}-{data[1]}") if data[1] == 'class_score' else 0.0
-        #         if data[1] == 'class_score':
-        #             pass
-        #             # class_score = request.session[f"{data[0]}-class_score"]
-        #             # try:
-        #             #     pupil = Pupil.objects.get(id=data[0], school_id=request.user.school_id)
-        #             #     print('Pupil: '+ pupil.full_name() + ' Exams: ' + exam_score + ' Class: ' + class_score)
-        #             #     score = float(exam_score) + float(class_score)
-        #             #     if score > 100.0:
-        #             #         context['errors'] = f"Class {class_score} and exams {exam_score} score recorded for {pupil.full_name()} is more than 100 percent"
-        #             #         return render(request, 'staff/subject_class_term.html', context)
-        #             #     # class_score = request.session['class_score']
-        #             #     #print('Exam score ' + pupil.full_name() + ' ' + exam_score)
-        #             #     # score = float(exam_score) + float(class_score)
-        #             #     # print(class_score)
-        #             #
-        #             #     # request.session['class_score'] = None
-        #             # except Pupil.DoesNotExist:pass
-        #                 #print('error exams')
-        #         elif data[1] == 'exam_score':
-        #
-        #             try:
-        #                 pupil = Pupil.objects.get(id=data[0])
-        #                 print(f'{pupil.full_name()} Class: {class_score} Exams: {exam_score}')
-        #             except Pupil.DoesNotExist:pass
-
-        return redirect('staff:subject-class-term', subject_id, class_id, term_id)
-        # return render(request, 'staff/subject_class_term.html', context)
-
+            return redirect('staff:subject-class-term', subject_id, class_id, term_id)
     return render(request, 'staff/subject_class_term.html', context)
 
 
@@ -411,7 +451,7 @@ def myschedules(request):
     except:pass
 
     try:
-        teacher = Staff.objects.get(user=request.user)
+        teacher = Staff.objects.get(user=request.user, school_id=request.user.school_id)
         schedules = ClassScheduleActivity.objects.filter(
             subject__teacher=teacher,
             class_schedule__academic_term=current_term
