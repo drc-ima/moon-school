@@ -7,5 +7,6 @@ urlpatterns = [
     path('register/school/', signup_school, name='register-school'),
     path('register/user/', signup_user, name='register-user'),
     path('', dashboard, name='dashboard'),
-    path('logout/', user_logout, name='logout')
+    path('logout/', user_logout, name='logout'),
+    path('permission-error/', permission_error, name='permission-error')
 ]

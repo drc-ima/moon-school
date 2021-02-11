@@ -10,6 +10,12 @@ from utils.randoms import institution_id, account_id
 
 # from django.utils.deprecation import RemovedInDjango40Warning
 
+
+@login_required()
+def permission_error(request):
+    return render(request, 'account/permission_error.html')
+
+
 @login_required()
 def dashboard(request):
     context = {

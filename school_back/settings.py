@@ -145,6 +145,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
+PERMISSION_REDIRECT_URL = 'account:permission-error'
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (

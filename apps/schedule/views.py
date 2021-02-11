@@ -1,5 +1,6 @@
 import time
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -9,8 +10,11 @@ from apps.pupil.models import Class, ClassSubject
 from apps.schedule.models import ClassSchedule, ClassScheduleActivity
 from apps.school.models import AcademicTerm
 from apps.staff.models import Subject
+from utils.decorators import *
 
 
+@login_required
+@school_head_required
 def class_schedules(request, class_id, term_id):
     classe = Class.objects.get(id=class_id, school_id=request.user.school_id)
     term = AcademicTerm.objects.get(id=term_id, school_id=request.user.school_id)

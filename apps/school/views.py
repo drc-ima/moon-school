@@ -18,7 +18,9 @@ from apps.school import forms
 from apps.school.models import GradeScheme, AcademicYear, AcademicTerm, Attendance, PupilResult, Result, PassGrade
 from apps.school.serializers import *
 from apps.staff.models import Subject, Staff, SubjectTeacher
+from utils.decorators import *
 from utils.randoms import *
+
 
 # deprecated
 class SchoolSignup(APIView):
@@ -99,6 +101,7 @@ class SchoolSignup(APIView):
 
 
 @login_required()
+@school_admin_required
 def myschool(request):
     school = School.objects.get(school_id=request.user.school_id)
     context = {
@@ -124,6 +127,7 @@ def myschool(request):
 
 
 @login_required()
+@school_head_required
 def management(request):
 
     pass_grade = None
@@ -240,6 +244,7 @@ def management(request):
 
 
 @login_required()
+@school_head_required
 def class_detail(request, id):
     classe = Class.objects.get(id=id, school_id=request.user.school_id)
 
@@ -311,6 +316,7 @@ def class_detail(request, id):
 
 
 @login_required()
+@school_head_required
 def subject_detail(request, id):
     subject = Subject.objects.get(id=id, school_id=request.user.school_id)
 
@@ -368,6 +374,7 @@ def subject_detail(request, id):
 
 
 @login_required()
+@school_head_required
 def academics(request):
     academic_sessions = AcademicYear.objects.filter(school_id=request.user.school_id)
 
@@ -414,6 +421,7 @@ def academics(request):
 
 
 @login_required()
+@school_head_required
 def academic_details(request, id):
     academic = AcademicYear.objects.get(school_id=request.user.school_id, id=id)
 
@@ -475,6 +483,7 @@ def academic_details(request, id):
 
 
 @login_required()
+@school_head_required
 def term_details(request, id):
     term = AcademicTerm.objects.get(school_id=request.user.school_id, id=id)
 
@@ -531,6 +540,7 @@ def term_details(request, id):
 
 
 @login_required()
+@school_head_required
 def class_attendances(request, attendance_id):
     attendance = Attendance.objects.get(id=attendance_id, school_id=request.user.school_id)
 
@@ -543,7 +553,9 @@ def class_attendances(request, attendance_id):
 
     return render(request, 'school/class_attendances.html', context)
 
+
 @login_required()
+@school_head_required
 def class_results(request, id):
     classe = Class.objects.get(id=id)
 
@@ -558,6 +570,7 @@ def class_results(request, id):
 
 
 @login_required()
+@school_head_required
 def pupils(request):
 
     context = {
@@ -568,6 +581,7 @@ def pupils(request):
 
 
 @login_required()
+@school_head_required
 def new_pupil(request):
 
     context = {
@@ -599,6 +613,5 @@ def new_pupil(request):
             pc.save()
 
             return redirect('school:pupils')
-
 
     return render(request, 'school/new_pupil.html', context)

@@ -6,9 +6,11 @@ from apps.pupil.models import Class, Pupil, ClassSubject
 from apps.school.models import AcademicYear, AcademicTerm, Result, PupilResult, PupilResultSubject, Attendance, \
     PupilAttendance, PassGrade
 from apps.staff.models import Staff
+from utils.decorators import *
 
 
 @login_required()
+@class_teacher_required
 def myclass(request):
     staff = Staff.objects.get(user=request.user, school_id=request.user.school_id)
     my_class = Class.objects.get(teacher=staff, school_id=request.user.school_id)
@@ -28,6 +30,7 @@ def myclass(request):
 
 
 @login_required()
+@class_teacher_required
 def class_term_results(request, term_id, class_id):
     term = AcademicTerm.objects.get(id=term_id, school_id=request.user.school_id)
     classe = Class.objects.get(id=class_id, school_id=request.user.school_id)
@@ -80,6 +83,7 @@ def class_term_results(request, term_id, class_id):
 
 
 @login_required()
+@class_teacher_required
 def class_term_attendance(request, term_id, class_id):
     term = AcademicTerm.objects.get(id=term_id, school_id=request.user.school_id)
     classe = Class.objects.get(id=class_id, school_id=request.user.school_id)
@@ -103,6 +107,7 @@ def class_term_attendance(request, term_id, class_id):
 
 
 @login_required()
+@class_teacher_required
 def class_term_attendance_pupil(request, attendance_id, pupil_id):
     attendance = Attendance.objects.get(id=attendance_id, school_id=request.user.school_id)
     pupil = Pupil.objects.get(id=pupil_id, school_id=request.user.school_id)
@@ -118,6 +123,7 @@ def class_term_attendance_pupil(request, attendance_id, pupil_id):
 
 
 @login_required()
+@class_teacher_required
 def class_term_pupil(request, pupil_result_id):
     pupil_result = PupilResult.objects.get(id=pupil_result_id, school_id=request.user.school_id)
 

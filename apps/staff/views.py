@@ -16,9 +16,11 @@ from apps.school.models import School, AcademicYear, AcademicTerm, Result, Pupil
 from apps.staff import forms
 from apps.staff.models import Staff, Subject
 from utils.randoms import account_id, institution_id
+from utils.decorators import *
 
 
 @login_required()
+@school_admin_required
 def staffs(request):
     staff = Staff.objects.filter(school_id=request.user.school_id)
 
@@ -131,6 +133,7 @@ def staffs(request):
 
 
 @login_required()
+@school_head_required
 def new_staff(request):
     context = {
         'form': forms.StaffForm
@@ -153,6 +156,7 @@ def new_staff(request):
 
 
 @login_required()
+@teacher_required
 def mysubjects(request):
 
     staff = None
@@ -171,6 +175,7 @@ def mysubjects(request):
 
 
 @login_required()
+@teacher_required
 def subject_class(request, subject_id, class_id):
     subject = Subject.objects.get(school_id=request.user.school_id, id=subject_id)
 
@@ -188,6 +193,7 @@ def subject_class(request, subject_id, class_id):
 
 
 @login_required()
+@teacher_required
 def subject_class_term(request, subject_id, class_id, term_id):
     subject = Subject.objects.get(school_id=request.user.school_id, id=subject_id)
 
@@ -360,6 +366,7 @@ def subject_class_term(request, subject_id, class_id, term_id):
 
 
 @login_required()
+@class_teacher_required
 def class_attendance(request):
     today = datetime.datetime.strptime(request.GET.get('today'), '%Y-%m-%d').date() if request.GET.get(
         'today') else timezone.now().date()
@@ -441,6 +448,7 @@ def class_attendance(request):
 
 
 @login_required()
+@teacher_required
 def myschedules(request):
 
     teacher = None
